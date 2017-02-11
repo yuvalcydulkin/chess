@@ -3,11 +3,16 @@
         <meta charset="utf-8">
         <title>Chess</title>
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="css/app.css" />
         <script src="bower_components/angular/angular.js"></script>
         <script src="app.module.js"></script>
     </head>
 
     <body>
-        {{ 1 + 2 }}
+        <div class="board">
+            <div class="square" ng-repeat="square in board track by $index" ng-class="squareClass($index)">
+                {{ square }}
+            </div>
+        </div>
     </body>
 </html>

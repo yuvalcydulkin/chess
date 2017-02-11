@@ -1,0 +1,21 @@
+.board {
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -200px; }
+  .board .square {
+    float: left;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
+  .board .light {
+    background-color: #f9f6ea; }
+  .board .dark {
+    background-color: #406d2b; }
+
+/*# sourceMappingURL=app.css.map */
