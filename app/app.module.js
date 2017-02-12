@@ -4,7 +4,7 @@ var app = angular.module('chessApp',[])
 .run(function($rootScope) {
     $rootScope.board = [];
     $rootScope.selected = -1;
-    var piece = {
+    $rootScope.piece = {
         0 : '',     // EMPTY
         1 : 'K',    // WHITE
         2 : 'Q',
@@ -56,6 +56,10 @@ var app = angular.module('chessApp',[])
             classNames += (i % 2 === 0) ? "light" : "dark";
         } else {
             classNames += (i % 2 === 0) ? "dark" : "light";
+        }
+        var piece = $rootScope.board[i];
+        if (piece) {
+            classNames += (piece < 7) ? " white" : " black";
         }
         if (i === $rootScope.selected) classNames += " selected";
         return classNames;

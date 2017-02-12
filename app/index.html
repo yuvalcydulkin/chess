@@ -14,7 +14,7 @@
               ng-repeat = "square in board track by $index"
               ng-class  = "squareClass($index)"
               ng-click  = "select($index)">
-                {{ square }}
+                <span ng-show="board[$index]">{{ piece[square] }}</span>
             </div>
         </div>
     </body>
