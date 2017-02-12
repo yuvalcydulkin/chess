@@ -6,6 +6,7 @@
     left: 50%;
     margin-top: -200px;
     margin-left: -200px;
+    cursor: default;
     .square {
         float: left;
         width: 50px;
@@ -19,5 +20,8 @@
     }
     .dark {
         background-color: rgb(64, 109, 43);
+    }
+    .selected {
+        background-color: rgb(110, 185, 229);
     }
 }

@@ -3,6 +3,7 @@
 var app = angular.module('chessApp',[])
 .run(function($rootScope) {
     $rootScope.board = [];
+    $rootScope.selected = -1;
     var piece = {
         0 : '',     // EMPTY
         1 : 'K',    // WHITE
@@ -44,6 +45,7 @@ var app = angular.module('chessApp',[])
     }
 
     $rootScope.squareClass = function(i) {
+        var classNames = "";
         var eightMults = [8,16,24,32,40,48,56,64];
         for (var j in eightMults) {
             if (i < eightMults[j]) {
@@ -51,10 +53,20 @@ var app = angular.module('chessApp',[])
             }
         }
         if (j % 2 == 0) {
-            return (i % 2 == 0) ? "light" : "dark";
+            classNames += (i % 2 === 0) ? "light" : "dark";
         } else {
-            return (i % 2 == 0) ? "dark" : "light";
+            classNames += (i % 2 === 0) ? "dark" : "light";
         }
+        if (i === $rootScope.selected) classNames += " selected";
+        return classNames;
+    }
+
+    $rootScope.select = function(i) {
+        if (i === $rootScope.selected) {
+            $rootScope.selected = -1;
+            return;
+        }
+        $rootScope.selected = i;
     }
 
     run();

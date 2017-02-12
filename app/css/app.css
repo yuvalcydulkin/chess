@@ -5,7 +5,8 @@
   top: 50%;
   left: 50%;
   margin-top: -200px;
-  margin-left: -200px; }
+  margin-left: -200px;
+  cursor: default; }
   .board .square {
     float: left;
     width: 50px;
@@ -17,5 +18,7 @@
     background-color: #f9f6ea; }
   .board .dark {
     background-color: #406d2b; }
+  .board .selected {
+    background-color: #6eb9e5; }
 
 /*# sourceMappingURL=app.css.map */
