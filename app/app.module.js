@@ -44,6 +44,91 @@ var app = angular.module('chessApp',[])
         $rootScope.board = init($rootScope.board);
     }
 
+    function rank(i) {
+        var squares = [];
+        var j;
+        for (j = i; j % 8 != 0; j--) {
+            squares.push(j);
+        }
+        squares.push(j);
+        for (var j = i; j % 8 != 7; j++) {
+            squares.push(j);
+        }
+        squares.push(j);
+        return squares;
+    }
+
+    function file(i) {
+        var squares = [];
+        for (var j = i; j >= 0; j -= 8) {
+            squares.push(j);
+        }
+        for (var j = i; j <= 63; j += 8) {
+            squares.push(j);
+        }
+        return squares;
+    }
+
+    function diag(i) {
+        var squares = [];
+        for (var j = i; j >= 0; j -= 7) {
+            squares.push(j);
+        }
+        for (var j = i; j <= 63; j += 7) {
+            squares.push(j);
+        }
+        for (var j = i; j >= 0; j -= 9) {
+            squares.push(j);
+        }
+        for (var j = i; j <= 63; j += 9) {
+            squares.push(j);
+        }
+        return squares;
+    }
+
+    function possibleMoves(i, p) {
+        var piece = $rootScope.piece[p];
+        switch(piece) {
+            case 'K':
+                return [i-9,i-8,i-7,i-1,i+1,i+7,i+8,i+9];
+            case 'Q':
+                return rank(i).concat(file(i)).concat(diag(i));
+            case 'R':
+                return rank(i).concat(file(i));
+            case 'N':
+                return [i-17,i-15,i-10,i-6,i+6,i+10,i+15,i+17];
+            case 'B':
+                return diag(i);
+            case 'P':
+                if (p === 6) {
+                    return (i >= 48 && i <= 55) ? [i-8,i-16] : [i-8];
+                } else {
+                    return (i >= 8 && i <= 15) ? [i+8,i+16] : [i+8];
+                }
+            default:
+                return [];
+        }
+
+    }
+
+    function isLegal(i, p) {
+        if ($rootScope.board[i]) {
+            return false;
+        }
+        return true;
+    }
+
+    function move(p, from, to) {
+        if (possibleMoves(from, p).indexOf(to) !== -1 && isLegal(to, p)) {
+            $rootScope.board[to] = p;
+            $rootScope.board[from] = 0;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     $rootScope.squareClass = function(i) {
         var classNames = "";
         var eightMults = [8,16,24,32,40,48,56,64];
@@ -66,11 +151,20 @@ var app = angular.module('chessApp',[])
     }
 
     $rootScope.select = function(i) {
+        if ($rootScope.selected === -1 && !$rootScope.board[i]) {
+            return;
+        }
         if (i === $rootScope.selected) {
             $rootScope.selected = -1;
             return;
         }
-        $rootScope.selected = i;
+        if ($rootScope.selected != -1) {
+            if (move($rootScope.board[$rootScope.selected], $rootScope.selected, i)) {
+                $rootScope.selected = -1;
+            }
+        } else {
+            $rootScope.selected = i;
+        }
     }
 
     run();
