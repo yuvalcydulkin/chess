@@ -4,15 +4,16 @@ var app = angular.module('chessApp',[])
 .run(function($rootScope) {
     $rootScope.board = [];
     $rootScope.selected = -1;
+    $rootScope.turn = 0; // 0 White, 1 Black
     $rootScope.piece = {
-        0 : '',     // EMPTY
-        1 : 'K',    // WHITE
+        0 : '',     // Empty
+        1 : 'K',    // White
         2 : 'Q',
         3 : 'R',
         4 : 'N',
         5 : 'B',
         6 : 'P',
-        7 : 'K',    // BLACK
+        7 : 'K',    // Black
         8 : 'Q',
         9 : 'R',
         10 : 'N',
@@ -111,10 +112,20 @@ var app = angular.module('chessApp',[])
 
     }
 
+    function isWhite(p) {
+        return p >= 1 && p <= 6;
+    }
+
+    function isBlack(p) {
+        return p >= 7 && p <= 12;
+    }
+
+    function sameColor(p1, p2) {
+        return (isWhite(p1) && isWhite(p2)) || (isBlack(p1) && isBlack(p2));
+    }
+
     function isLegal(i, p) {
-        if ($rootScope.board[i]) {
-            return false;
-        }
+        if (sameColor(p,($rootScope.board[i]))) return false;
         return true;
     }
 
@@ -160,10 +171,11 @@ var app = angular.module('chessApp',[])
         }
         if ($rootScope.selected != -1) {
             if (move($rootScope.board[$rootScope.selected], $rootScope.selected, i)) {
+                $rootScope.turn = $rootScope.turn ^ 1;
                 $rootScope.selected = -1;
             }
         } else {
-            $rootScope.selected = i;
+            if ($rootScope.turn ^ isWhite($rootScope.board[i])) $rootScope.selected = i;
         }
     }
 
