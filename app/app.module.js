@@ -48,12 +48,14 @@ var app = angular.module('chessApp',[])
     function rank(i) {
         var squares = [];
         var j;
-        for (j = i; j % 8 != 0; j--) {
+        for (j = i-1; j % 8 != 0; j--) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
         squares.push(j);
-        for (var j = i; j % 8 != 7; j++) {
+        for (j = i+1; j % 8 != 7; j++) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
         squares.push(j);
         return squares;
@@ -61,28 +63,54 @@ var app = angular.module('chessApp',[])
 
     function file(i) {
         var squares = [];
-        for (var j = i; j >= 0; j -= 8) {
+        for (var j = i-8; j >= 0; j -= 8) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
-        for (var j = i; j <= 63; j += 8) {
+        for (var j = i+8; j <= 63; j += 8) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
         return squares;
     }
 
     function diag(i) {
         var squares = [];
-        for (var j = i; j >= 0; j -= 7) {
+        for (var j = i-7; j >= 0; j -= 7) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
-        for (var j = i; j <= 63; j += 7) {
+        for (var j = i+7; j <= 63; j += 7) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
-        for (var j = i; j >= 0; j -= 9) {
+        for (var j = i-9; j >= 0; j -= 9) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
         }
-        for (var j = i; j <= 63; j += 9) {
+        for (var j = i+9; j <= 63; j += 9) {
             squares.push(j);
+            if ($rootScope.board[j]) break;
+        }
+        return squares;
+    }
+
+    function pawnMoves(i, p) {
+        var squares = [];
+        if (p === 6) {
+            if (i >= 48 && i <= 55) {
+                if (!$rootScope.board[i-8] && !$rootScope.board[i-16]) squares.push(i-16);
+            }
+            if (!$rootScope.board[i-8]) squares.push(i-8);
+            if (isBlack($rootScope.board[i-9])) squares.push(i-9);
+            if (isBlack($rootScope.board[i-7])) squares.push(i-7);
+        } else {
+            if (i >= 8 && i <= 15) {
+                if (!$rootScope.board[i+8] && !$rootScope.board[i+16]) squares.push(i+16);
+            }
+            if (!$rootScope.board[i+8]) squares.push(i+8);
+            if (isWhite($rootScope.board[i+9])) squares.push(i+9);
+            if (isWhite($rootScope.board[i+7])) squares.push(i+7);
         }
         return squares;
     }
@@ -101,15 +129,10 @@ var app = angular.module('chessApp',[])
             case 'B':
                 return diag(i);
             case 'P':
-                if (p === 6) {
-                    return (i >= 48 && i <= 55) ? [i-8,i-16] : [i-8];
-                } else {
-                    return (i >= 8 && i <= 15) ? [i+8,i+16] : [i+8];
-                }
+                return pawnMoves(i, p);
             default:
                 return [];
         }
-
     }
 
     function isWhite(p) {
@@ -175,8 +198,16 @@ var app = angular.module('chessApp',[])
                 $rootScope.selected = -1;
             }
         } else {
-            if ($rootScope.turn ^ isWhite($rootScope.board[i])) $rootScope.selected = i;
+            if ($rootScope.turn ^ isWhite($rootScope.board[i]) || 1) $rootScope.selected = i;
         }
+    }
+
+    $rootScope.imgPath = function(p) {
+        if (!p) return "";
+        var path = "img/";
+        path += isWhite(p) ? "white/" : "black/";
+        path += $rootScope.piece[p] + ".png";
+        return path;
     }
 
     run();
